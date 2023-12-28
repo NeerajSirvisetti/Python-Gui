@@ -40,23 +40,23 @@ class ff_gui:
         self.current_step = tk.StringVar()
         self.boxes = []
 
+        # Dropdown to select steps
+        self.step_dropdown = ttk.Combobox(master, textvariable=self.current_step, values=self.steps, state="readonly")
+        self.step_dropdown.bind("<<ComboboxSelected>>", self.update_step_buttons)
+        self.step_dropdown.pack(pady=10)
+
         # Buttons for selected step
         self.run_button = tk.Button(master, text="Run", command=self.run_command, state=tk.DISABLED)
         self.run_button.pack(side="left", padx=5)
         self.stop_button = tk.Button(master, text="Stop", command=self.stop_command, state=tk.DISABLED)
         self.stop_button.pack(side="left", padx=5)
 
-        # Dropdown to select steps
-        self.step_dropdown = ttk.Combobox(master, textvariable=self.current_step, values=self.steps, state="readonly")
-        self.step_dropdown.bind("<<ComboboxSelected>>", self.update_step_buttons)
-        self.step_dropdown.pack(side="left", padx=5)
-
         # Message panels
         self.message_label = tk.Label(master, text="", bg="white", fg="black", font=("Helvetica", 10), anchor="w")
-        self.message_label.pack(pady=10, padx=10, side="left", fill="both", expand=True)
+        self.message_label.pack(pady=10, padx=10, fill="both", expand=True)
 
         self.completed_steps_label = tk.Label(master, text="Completed Steps:", font=("Helvetica", 10), anchor="w")
-        self.completed_steps_label.pack(pady=10, padx=10, side="left", fill="both", expand=True)
+        self.completed_steps_label.pack(pady=10, padx=10, fill="both", expand=True)
 
         # Initialize the file checker
         self.file_checker = FileChecker(folder_path, steps, self.update_box_color)
