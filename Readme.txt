@@ -61,9 +61,24 @@ Version 4
 Introducing a bind key for restarting the application
 
 Info:
+Introduce a key binding to rerun the whole code.
 
 New changes introduced:
+1. The on_key_restart method is added to handle the "Ctrl+R" key combination. It displays a message and then calls the restart_application method.
+2. The restart_application method restarts the application by calling os.execl with the current Python executable and script arguments.
+3. You can press "Ctrl+R" to restart the application.
 
+
+
+###################
+Version 2.0
+###################
+To have the following modifications:
+1. The steps should be now be able to be selected in form of drop down.
+2. Once one step is selected from the drop down there need to be 2 buttons beside the step, 1. Run 2.Stop; once run is pressed then it needs to execute the shell command that is associated with the step selected as per before code, if stop selected then the shell command that is currently running need to be stopped. The stop key need to be able to press only when the run key is pressed and the command is being ingoing in shell, if not it should be in inactive state with different color without able to be pressed.
+3. The steps should be now only visible based on the drop down selected.
+4. One new message window need to be there for Completed Steps.The steps which are of green color like of before code logic then it should display in this new window as names or small blocks .
+5. The Message window which was already existing in the code need to be now displayed below the above in new message window. 
 
 ###################
 Experimental files

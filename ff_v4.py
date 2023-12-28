@@ -31,7 +31,7 @@ class FileChecker:
 class ff_gui:
     def __init__(self, master, steps, folder_path):
         self.master = master
-        master.geometry("600x900")  # Increased height for progress bar
+        master.geometry("600x850")  # Increased height to accommodate the message panel
 
         self.label = ttk.Label(master, text="Hello, Welcome to Foundation Flow Gui Wizard!")
         self.label.pack(pady=10)
@@ -45,18 +45,6 @@ class ff_gui:
         # Message panel
         self.message_label = tk.Label(master, text="", bg="white", fg="black", font=("Helvetica", 10))
         self.message_label.pack(pady=10)
-
-        # Progress bar
-        self.progress_var = tk.DoubleVar()
-        self.progress_bar = ttk.Progressbar(master, variable=self.progress_var, maximum=len(self.steps))
-        self.progress_bar.pack(pady=10)
-
-        # Buttons
-        self.manual_step_button = tk.Button(master, text="Manually Trigger Step", command=self.manual_step)
-        self.manual_step_button.pack(pady=10)
-
-        self.reset_button = tk.Button(master, text="Reset Progress", command=self.reset_progress)
-        self.reset_button.pack(pady=10)
 
         # Bind keys
         self.master.bind("<Control_L>e", self.on_key_exit)
@@ -77,7 +65,6 @@ class ff_gui:
             self.execute_command_for_step("Init")
             self.action_completed[0] = True
             self.update_box_color("Init")
-            self.update_progress()
         else:
             self.display_message("Action already completed for 'Init'.")
 
@@ -98,23 +85,8 @@ class ff_gui:
                 self.execute_command_for_step(self.steps[index])
                 self.boxes[index].config(bg="yellow")
                 self.master.after(3000, lambda: self.boxes[index].config(bg="green"))
-                self.update_progress()
             else:
                 self.display_message(f"Action already completed for '{self.steps[index]}'.")
-
-    def manual_step(self):
-        selected_index = self.boxes.index(tk.CURRENT)
-        if not self.action_completed[selected_index]:
-            self.execute_command_for_step(self.steps[selected_index])
-            self.boxes[selected_index].config(bg="yellow")
-            self.master.after(3000, lambda: self.boxes[selected_index].config(bg="green"))
-            self.update_progress()
-        else:
-            self.display_message(f"Action already completed for '{self.steps[selected_index]}'.")
-
-    def reset_progress(self):
-        self.action_completed = [False] * len(self.steps)
-        self.update_progress()
 
     def execute_command_for_step(self, step):
         # Replace this function with the actual command you want to execute for each step
@@ -133,6 +105,10 @@ class ff_gui:
     def display_message(self, message):
         self.message_label.config(text=message)
         self.master.after(3000, lambda: self.message_label.config(text=""))  # Display message for 3 seconds
+
+    def restart_application(self):
+        python = sys.executable
+        os.execl(python, python, *sys.argv)
 
 # Create the main window
 root = tk.Tk()
