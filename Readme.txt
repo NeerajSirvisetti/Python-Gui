@@ -1,7 +1,7 @@
 
 
 #################
-Version 0
+Version 1.0
 ################
 1. Created boxes based on the steps given 
 2. Once selected a box, that box turned to Yellow color upon selection.
@@ -10,7 +10,7 @@ Version 0
 
 
 #################
-Version 1
+Version 1.1
 #################
 The functionality of a class that continously checks a folder , if in the folder certain named file is present then that named step box should be changed to green color, then if the box color is green then even if we press the box just we need to get message saying that already action completed.
 
@@ -25,7 +25,7 @@ New changes introduced:
 The execute_function method updates the action completion status and the box color to green.
 
 #################
-Version 2 (Major update)
+Version 1.2 (Major update)
 #################
 1) when User select the box which was previously not have green color, it should perform certain function then turn into yellow for 3 secs later get back to green color. 
 2) when user select the box which is already green then get message saying this action is already done.
@@ -42,7 +42,7 @@ The display_message method is created to set the message text, display it for 3 
 3. The perform_additional_action method is a placeholder for the actual function you want to execute when selecting a box that was not green previously. Replace it with your specific logic.
 
 ############
-version 3
+version 1.3
 ############
 Executing the shell commands based on the step that is selected
 
@@ -56,7 +56,7 @@ New changes introduced:
 4. The Thread is used to run the command in the background, preventing it from blocking the GUI.
 
 ##############
-Version 4 
+Version 1.4 
 ###############
 Introducing a bind key for restarting the application
 
@@ -79,6 +79,19 @@ To have the following modifications:
 3. The steps should be now only visible based on the drop down selected.
 4. One new message window need to be there for Completed Steps.The steps which are of green color like of before code logic then it should display in this new window as names or small blocks .
 5. The Message window which was already existing in the code need to be now displayed below the above in new message window. 
+6. Fit to the screen based on the dimension.
+
+
+
+
+###################
+Version 2.1
+###################
+To have the following modifications:
+1. The drop down selection color should be different based on the completion.
+2. Allign the message window below the completed steps section.
+3. If the selected step is run, previous steps should also be ran if not greeen or completed and then at last run the selected step.
+
 
 ###################
 Experimental files

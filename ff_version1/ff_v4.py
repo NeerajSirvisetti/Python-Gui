@@ -31,7 +31,7 @@ class FileChecker:
 class ff_gui:
     def __init__(self, master, steps, folder_path):
         self.master = master
-        master.geometry("600x850")  # Increased height to accommodate the message panel
+        master.geometry("0x850")  # Increased height to accommodate the message panel
 
         self.label = ttk.Label(master, text="Hello, Welcome to Foundation Flow Gui Wizard!")
         self.label.pack(pady=10)
