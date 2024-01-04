@@ -1,32 +1,30 @@
 import tkinter as tk
 from tkinter import ttk
 
-def check_condition(option):
-    # Replace this condition with your own logic
-    return option.startswith("B")  # Change the condition as needed
 
+class CustomComboboxStyle:
+    def __init__(self):
+        self.style = ttk.Style()
+
+        # Create a style for the dropdown list elements
+        self.style.configure("Custom.TCombobox", padding=5, fieldbackground="white", readonlybackground="white")
+
+        # Create a style for the dropdown label (when an option is selected)
+        self.style.map("Custom.TCombobox", background=[('active', 'green')], readonlybackground=[('selected', 'green')])
+
+# Create the main window
 root = tk.Tk()
-root.title("Custom Colored Dropdown Options")
+root.title("Custom Combobox Style")
 
-options = ["Apple", "Banana", "Orange", "Carrot", "Broccoli", "Spinach"]
+# Create an instance of the custom style
+custom_style = CustomComboboxStyle()
 
-# Create a custom style for the TCombobox
-style = ttk.Style()
+# Create a Combobox with the custom style
+combo_values = ["Option1", "Option2", "Option3"]
+selected_value = tk.StringVar()
 
-# Set the background color for each element based on the condition
-for index, option in enumerate(options):
-    if check_condition(option):
-        style.configure(f"Custom.TCombobox.Option{index}", fieldbackground="lightgreen")
-    else:
-        style.configure(f"Custom.TCombobox.Option{index}", fieldbackground="lightcoral")
+combobox = ttk.Combobox(root, textvariable=selected_value, values=combo_values, style="Custom.TCombobox")
+combobox.pack(pady=10, padx=10)
 
-# Create the dropdown using a TCombobox
-dropdown = ttk.Combobox(
-    root,
-    values=options,
-    state="readonly",
-    style="Custom.TCombobox",
-)
-dropdown.pack(pady=10)
-
+# Run the main loop
 root.mainloop()
