@@ -6,12 +6,12 @@ import os
 import sys
 
 
-class MyGUI:
-    def __init__(self, root):
+class ApicGui:
+    def __init__(self, root, steps, folder_path_to_monitor ):
+        self.steps = steps
         self.root = root
-        self.root.title("GUI for Commands")
         self.root.geometry("800x600")
-        self.root.title(f"Current Working Directory: {subprocess.run(['pwd'], capture_output=True, text=True).stdout.strip()}")
+        self.root.title(f"APIC FLOW: {subprocess.run(['pwd'], capture_output=True, text=True).stdout.strip()}")
 
         # Section 1
         self.section1 = tk.Frame(root, bd=2, relief=tk.GROOVE)
@@ -35,9 +35,9 @@ class MyGUI:
         self.r4.place(relx=0, rely=r1_height+r2_height+r3_height, relwidth=1, relheight=r4_height)
 
         # Widgets in r1
-        self.options = ["Option 1", "Option 2", "Option 3"]
+        self.options = self.steps
         self.selected_option = tk.StringVar()
-        self.selected_option.set(self.options[0])
+        self.selected_option.set("Select the Stage")
 
         self.dropdown = ttk.Combobox(self.r1, values=self.options, textvariable=self.selected_option)
         self.dropdown.pack(side=tk.LEFT, padx=5)
@@ -48,14 +48,14 @@ class MyGUI:
         self.stop_button = tk.Button(self.r1, text="Stop", state=tk.DISABLED)
         self.stop_button.pack(side=tk.LEFT, padx=5)
 
-        self.refresh_button = tk.Button(self.r1, text="Refresh", command=self.refresh_gui)
+        self.refresh_button = tk.Button(self.r1, text="Refresh", command=self.restart_application)
         self.refresh_button.pack(side=tk.LEFT, padx=5)
 
         # Widgets in r2
         self.scrollbar_r2 = tk.Scrollbar(self.r2)
         self.scrollbar_r2.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.message_window_r2 = tk.Text(self.r2, wrap="word", yscrollcommand=self.scrollbar_r2.set)
+        self.message_window_r2 = tk.Text(self.r2, wrap="word", yscrollcommand=self.scrollbar_r2.set, state=tk.DISABLED)
         self.message_window_r2.pack(expand=True, fill=tk.BOTH)
 
         # Widgets in r3
@@ -63,7 +63,7 @@ class MyGUI:
         self.status_window_r3.pack(expand=True, fill=tk.BOTH)
 
         # Widgets in r4
-        self.message_window_r4 = tk.Text(self.r4, wrap="word")
+        self.message_window_r4 = tk.Text(self.r4, wrap="word", state=tk.DISABLED)
         self.message_window_r4.pack(expand=True, fill=tk.BOTH)
 
         # Section 2
@@ -73,13 +73,12 @@ class MyGUI:
         self.scrollbar_s2 = tk.Scrollbar(self.section2)
         self.scrollbar_s2.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.message_window_r2 = tk.Text(self.section2, wrap="word", yscrollcommand=self.scrollbar_s2.set)
-        self.message_window_r2.pack(expand=True, fill=tk.BOTH)
+        self.message_window_s2 = tk.Text(self.section2, wrap="word", yscrollcommand=self.scrollbar_s2.set, state=tk.DISABLED)
+        self.message_window_s2.pack(expand=True, fill=tk.BOTH)
 
         # Bind keys
         self.root.bind("<Control_L>e", self.on_key_exit)
         self.root.bind('<Control_L>r', self.on_key_restart)
-
 
     def run_command(self):
         selected_option = self.selected_option.get()
@@ -94,26 +93,37 @@ class MyGUI:
         now = datetime.now()
         return now.strftime("%Y-%m-%d %H:%M:%S")
 
-    def display_message(self, message):
-      self.message_label.config(text=message)
-      self.rootself..after(3000, lambda: self.message_label.config(text="")
-                        )  # Display message for 3 seconds
-  
+    def display_message(self, message, target_window):
+        target_window.config(state=tk.NORMAL)
+        target_window.insert(tk.END, message + "\n")
+        target_window.config(state=tk.DISABLED)
+        self.root.after(3000, lambda: target_window.delete(1.0, tk.END))  # Display message for 3 seconds
+
     def on_key_exit(self, event):
-      self.display_message("Exiting the application.")
-      #self.file_checker.stop_monitoring()
-      self.root.destroy()
+        self.display_message("Exiting the application.", self.message_window_s2)
+        self.root.destroy()
 
     def on_key_restart(self, event):
-      self.display_message("Restarting the application.")
-      self.restart_application()
+        self.display_message("Restarting the application.", self.message_window_s2)
+        self.restart_application()
 
     def restart_application(self):
-      python = sys.executable
-      os.execl(python, python, *sys.argv)
+        python = sys.executable
+        os.execl(python, python, *sys.argv)
 
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = MyGUI(root)
+ 
+    # List of steps
+    steps = [
+        "Init", "Floorplan", "Powerplan", "Place", "PreCts", "Cts", "PostCts",
+        "Route", "PostRoute"
+    ]
+
+    # Set the folder path to monitor
+    folder_path_to_monitor = "./make/"
+
+    # Calling the class
+    gui = ApicGui(root, steps, folder_path_to_monitor)
     root.mainloop()
