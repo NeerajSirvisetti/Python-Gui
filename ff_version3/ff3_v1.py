@@ -76,7 +76,7 @@ class ApicGui:
         self.stop_button = tk.Button(self.r1, text="Stop", state=tk.DISABLED)
         self.stop_button.pack(side=tk.LEFT, padx=5)
 
-        self.refresh_button = tk.Button(self.r1, text="Refresh", command=self.restart_application)
+        self.refresh_button = tk.Button(self.r1, text="Refresh", command=self.inter)
         self.refresh_button.pack(side=tk.LEFT, padx=5)
 
         # Widgets in r2
@@ -158,7 +158,9 @@ class ApicGui:
           self.completed_index.append(self.steps.index(i))
         self.completed_index.sort()
         #print(f"completed indexs:{self.completed_index},completed steps:{self.completed_steps},steps:{self.steps}")
-        self.display_message(f"Completed Steps: {', '.join(self.completed_steps)}\nStatus: {self.steps[self.completed_index[-1]]}",self.status_window_r3, disappear=False, clear=True)
+        #self.display_message(f"Completed Steps: {', '.join(self.completed_steps)}\nStatus: {self.steps[self.completed_index[-1]]}",self.status_window_r3, disappear=False, clear=True)
+        self.display_message(f"Status: {self.steps[self.completed_index[-1]]}",self.status_window_r3, disappear=False, clear=True)
+
 
     def run_command(self):
         selected_step = self.selected_option.get()
@@ -213,9 +215,12 @@ class ApicGui:
       
 
     def on_key_restart(self, event):
+        self.inter()
+
+    def inter(self):
         self.display_message("Restarting the application.", self.message_window_s2, disappear=False, clear=True)
         self.root.after(1000, self.restart_application)
-
+      
     def restart_application(self):
         python = sys.executable
         os.execl(python, python, *sys.argv)
