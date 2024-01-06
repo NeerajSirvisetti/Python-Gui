@@ -1,11 +1,11 @@
-import tkinter as tk
-from tkinter import ttk
-from datetime import datetime
-import subprocess
 import os
-from threading import Thread
+import subprocess
 import sys
 import time
+import tkinter as tk
+from datetime import datetime
+from threading import Thread
+from tkinter import messagebox, ttk
 
 
 class FileChecker:
@@ -62,14 +62,19 @@ class ApicGui:
         self.r4 = tk.Frame(self.section1, bd=2, relief=tk.GROOVE)
         self.r4.place(relx=0, rely=r1_height+r2_height+r3_height, relwidth=1, relheight=r4_height)
 
+        # Configure the custom style before creating the combobox
+        self.style = ttk.Style()
+        self.style.configure("Custom.TCombobox", fieldbackground="white")
+
         # Widgets in r1
         self.options = self.steps
         self.selected_option = tk.StringVar()
         self.selected_option.set("Select the Stage")
 
-        self.dropdown = ttk.Combobox(self.r1, values=self.options,state="readonly",textvariable=self.selected_option)
+        self.dropdown = ttk.Combobox(self.r1, values=self.options, state="readonly", textvariable=self.selected_option)
         self.dropdown.pack(side=tk.LEFT, padx=5)
-
+        self.dropdown.configure(style="Custom.TCombobox")
+        
         self.run_button = tk.Button(self.r1, text="Run", command=self.run_command)
         self.run_button.pack(side=tk.LEFT, padx=5)
 
@@ -123,7 +128,17 @@ class ApicGui:
         # Bind keys
         self.root.bind("<Control_L>e", self.on_key_exit)
         self.root.bind('<Control_L>r', self.on_key_restart)
-
+        self.dropdown.bind("<FocusIn>", self.on_combobox_focus)
+        self.dropdown.bind("<FocusOut>", self.on_combobox_focus)
+      
+    def on_combobox_focus(self, event):
+      selected_step = self.selected_option.get()
+      if (selected_step in self.steps) and (self.action_completed[selected_step]):
+        self.style.configure("Custom.TCombobox", fieldbackground="green")
+      else:
+        self.style.configure("Custom.TCombobox", fieldbackground="white")
+      
+      
     def update_window_size(self):
       screen_width = self.root.winfo_screenwidth()
       screen_height = self.root.winfo_screenheight()
@@ -166,7 +181,8 @@ class ApicGui:
         selected_step = self.selected_option.get()
         if self.action_completed[selected_step]:
           # Check if the selected step is already completed
-          self.display_message(f"Step '{selected_step}' is already completed.",self.message_window_s2, disappear=True, clear=True)
+          #self.display_message(f"Step '{selected_step}' is already completed.",self.message_window_s2, disappear=True, clear=True)
+          self.ask_question(f"Step '{selected_step}' is already completed.\nDo you want to Restart?")
         else:
           self.display_message(f"Running '{selected_step}' command.",self.message_window_s2, disappear=True, clear=True)
           self.execute_command_for_step(selected_step)
@@ -204,11 +220,24 @@ class ApicGui:
         target_window.config(state=tk.DISABLED)
       
     def update_status(self, step):
-        index = self.steps.index(step)
+        self.steps.index(step)
         self.action_completed[step] = True
         self.update_completed_steps()
 
-
+    def ask_question(self,message):
+      selected_step = self.selected_option.get()
+      response = messagebox.askyesno(selected_step, message)
+      if response:
+          message = f"Restarting '{selected_step}' command."
+          # Mark steps after the selected step as completed
+          selected_index = self.steps.index(selected_step)
+          for step in self.steps[selected_index + 1:]:
+              self.action_completed[step] = False
+          self.update_completed_steps()
+      else:
+          message = f"Stopping the restart of '{selected_step}' command."
+      self.display_message(message,self.message_window_s2, disappear=True, clear=True)
+      
     def on_key_exit(self, event):
         self.display_message("Exiting the application.", self.message_window_s2, disappear=False, clear=True)
         self.root.after(1000, self.root.destroy)
