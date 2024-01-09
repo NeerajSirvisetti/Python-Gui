@@ -1,0 +1,6 @@
+#### Section 1
+- Contains multiple frames (`r1`, `r2`, `r3`, `r4`) for organizing widgets.
+- Uses a custom style for the Tkinter Combobox (`dropdown`).
+- Provides a Combobox for selecting a step, along with buttons for running, stopping, and refreshing.
+- Displays messages and statuses in separate text widgets (`message_window_r2`, `status_window_r3`, `message_window_r4`).
+- Initializes a `FileChecker` instance to monitor a specified folder for steps and updates the GUI when steps are completed.
